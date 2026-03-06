@@ -17,14 +17,21 @@ def searchForExecutable(fileToFind, printOutput):
         print(f"{fileToFind}: not found")
     return False
 
-def executeProgram(fullPath, args, output_file=None, target_stream="stdout"):
+def executeProgram(fullPath, args, output_file=None, target_stream="stdout", append=False):
     try:
         if output_file:
-            with open(output_file, "w") as file:
-                if target_stream == "stderr":
-                    subprocess.run([fullPath] + args, stderr=file, text=True)
-                else:
-                    subprocess.run([fullPath] + args, stdout=file, text=True) 
+            if append:
+                with open(output_file, "a") as file:
+                    if target_stream == "stderr":
+                        subprocess.run([fullPath] + args, stderr=file, text=True)
+                    else:
+                        subprocess.run([fullPath] + args, stdout=file, text=True) 
+            else:    
+                with open(output_file, "w") as file:
+                    if target_stream == "stderr":
+                        subprocess.run([fullPath] + args, stderr=file, text=True)
+                    else:
+                        subprocess.run([fullPath] + args, stdout=file, text=True) 
         else:       
             subprocess.run([fullPath] + args, text=True)
     except:
@@ -74,10 +81,17 @@ def parseCommand(command):
 
 def handleRedirect(func, args):
     target_stream = None
+    append = False
     if ">" in args:
         index = args.index(">")
     elif "1>" in args:
         index = args.index("1>")
+    elif ">>" in args:
+        index = args.index(">>")
+        append = True
+    elif "1>>" in args:
+        index = args.index("1>>")
+        append = True
     elif "2>" in args:
         index = args.index("2>")
         target_stream = "stderr"
