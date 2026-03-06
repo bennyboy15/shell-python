@@ -1,4 +1,17 @@
 import sys
+import os
+
+def searchForExecutable(fileToFind):
+    system_path = os.environ.get('PATH')
+    directories = system_path.split(os.pathsep)
+
+    for directory in directories:
+        fullPath = directory + "/" + fileToFind
+        # IF EXISTS AND HAS EXECUTABLE PERMISSIONS
+        if os.access(fullPath, os.F_OK) and os.access(fullPath, os.X_OK):
+            print(f"{fileToFind} is {fullPath}")
+            return
+    print(f"{fileToFind}: not found")
 
 def main():
     builtIns = ["exit", "echo", "type"]
@@ -18,7 +31,8 @@ def main():
                 if args in builtIns:
                     print(f"{args} is a shell builtin")
                 else:
-                    print(f"{args}: not found")
+                    searchForExecutable(args)
+                    #print(f"{args}: not found")
                 continue
             case _:
                 print(f"{command}: command not found")
