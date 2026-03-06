@@ -44,9 +44,9 @@ def parseCommand(command):
     while i < len(command):
         char = command[i]
 
-        if char == "'":
+        if char == "'" and not inDoubleQuotes:
             inSingleQuotes = not inSingleQuotes
-        elif char == '"':
+        elif char == '"' and not inSingleQuotes:
             inDoubleQuotes = not inDoubleQuotes
         elif char == " " and not inSingleQuotes and not inDoubleQuotes:
             if current_arg:
