@@ -95,6 +95,10 @@ def handleRedirect(func, args):
     elif "2>" in args:
         index = args.index("2>")
         target_stream = "stderr"
+    elif "2>>" in args:
+        index = args.index("2>>")
+        target_stream = "stderr"
+        append=True
     else:
         index = None
     output_path = args[index + 1]
