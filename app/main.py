@@ -52,6 +52,10 @@ def parseCommand(command):
             if current_arg:
                 args.append(current_arg)
                 current_arg = ""
+        elif char == "\\":
+            if (i+1 < len(command)):
+                current_arg+=command[i+1]
+            i+=1
         else:
             current_arg += char
         i += 1
