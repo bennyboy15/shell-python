@@ -52,7 +52,7 @@ def parseCommand(command):
             if current_arg:
                 args.append(current_arg)
                 current_arg = ""
-        elif char == "\\":
+        elif char == "\\" and not inSingleQuotes:
             if (i+1 < len(command)):
                 current_arg+=command[i+1]
             i+=1
