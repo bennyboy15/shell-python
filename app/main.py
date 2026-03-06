@@ -105,6 +105,9 @@ def handleRedirect(func, args):
     else:
         executeProgram(func, actual_args, output_file=output_path, target_stream=target_stream)
 
+def isRedirectionOrAppend(args):
+    return ">" in args or "1>" in args or ">>" in args or "1>>" in args or "2>" in args
+
 def main():
     builtIns = ["exit", "echo", "type", "pwd", "cd"]
     while (True):
@@ -116,7 +119,7 @@ def main():
                 sys.exit()
                 continue
             case "echo":
-                if ">" in args or "1>" in args or ">>" in args or "1>>" in args or "2>" in args:
+                if isRedirectionOrAppend(args):
                     handleRedirect(func, args)
                 else:
                     print(" ".join(args))
@@ -140,7 +143,7 @@ def main():
             case _:
                 isExec = searchForExecutable(func, False)
                 if isExec:
-                    if ">" in args or "1>" in args or ">>" in args or "1>>" in args or "2>" in args:
+                    if isRedirectionOrAppend(args):
                         handleRedirect(func,args)
                     else:
                         executeProgram(func, args)
