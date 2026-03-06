@@ -2,10 +2,15 @@ import sys
 
 def main():
     while (True):
-        command = input("$ ")
-        match(command):
+        command = input("$ ").strip()
+        func = command.split(" ")[0].strip()
+        args = command.split(" ")[1:]
+        match(func):
             case "exit":
                 sys.exit()
+                continue
+            case "echo":
+                print(command[5:])
                 continue
             case _:
                 print(f"{command}: command not found")
