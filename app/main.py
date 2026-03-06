@@ -101,7 +101,10 @@ def main():
             case _:
                 isExec = searchForExecutable(func, False)
                 if isExec:
-                    executeProgram(func, args)
+                    if ">" in args:
+                        executeProgram(func, args, output_file=args[3])
+                    else:
+                        executeProgram(func, args)
                 else:
                     print(f"{command}: not found")
                 continue
