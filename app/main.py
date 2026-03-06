@@ -116,7 +116,7 @@ def isRedirectionOrAppend(args):
 def completer(text, state):
     options = [i for i in BUILTINS if i.startswith(text)]
     if state < len(options):
-        return options[state]
+        return options[state] + " "
     else:
         return None
 
