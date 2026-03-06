@@ -24,7 +24,7 @@ def executeProgram(fullPath, args):
         pass
 
 def main():
-    builtIns = ["exit", "echo", "type"]
+    builtIns = ["exit", "echo", "type", "pwd"]
     while (True):
         command = input("$ ").strip()
         func = command.split(" ")[0].strip()
