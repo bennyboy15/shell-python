@@ -70,7 +70,7 @@ def main():
                 continue
             case "echo":
                 toPrint = command[5:]
-                print(toPrint)
+                #print(toPrint)
                 print(" ".join(parseCommand(toPrint)))
                 continue
             case "type":
