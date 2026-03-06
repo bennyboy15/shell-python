@@ -80,7 +80,7 @@ def parseCommand(command):
     return args
 
 def handleRedirect(func, args):
-    target_stream = None
+    target_stream = "stdout"
     append = False
     if ">" in args:
         index = args.index(">")
@@ -99,10 +99,11 @@ def handleRedirect(func, args):
         index = None
     output_path = args[index + 1]
     actual_args = args[:index]
-    if target_stream:
-        executeProgram(func, actual_args, output_file=output_path, target_stream=target_stream)
+
+    if append:
+        executeProgram(func, actual_args, output_file=output_path, target_stream=target_stream, append=append)
     else:
-        executeProgram(func, actual_args, output_file=output_path)
+        executeProgram(func, actual_args, output_file=output_path, target_stream=target_stream)
 
 def main():
     builtIns = ["exit", "echo", "type", "pwd", "cd"]
