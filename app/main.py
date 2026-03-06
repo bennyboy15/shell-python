@@ -38,6 +38,7 @@ def parseCommand(command):
     args = []
     current_arg = ""
     inSingleQuotes = False
+    inDoubleQuotes = False
     
     i = 0
     while i < len(command):
@@ -45,7 +46,9 @@ def parseCommand(command):
 
         if char == "'":
             inSingleQuotes = not inSingleQuotes
-        elif char == " " and not inSingleQuotes:
+        elif char == '"':
+            inDoubleQuotes = not inDoubleQuotes
+        elif char == " " and not inSingleQuotes and not inDoubleQuotes:
             if current_arg:
                 args.append(current_arg)
                 current_arg = ""
