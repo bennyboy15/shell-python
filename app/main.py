@@ -102,7 +102,10 @@ def main():
                 isExec = searchForExecutable(func, False)
                 if isExec:
                     if ">" in args:
-                        executeProgram(func, args, output_file=args[args.index(">")+1])
+                        index = args.index(">")
+                        output_path = args[index + 1]
+                        actual_args = args[:index]
+                        executeProgram(func, actual_args, output_file=output_path)
                     else:
                         executeProgram(func, args)
                 else:
