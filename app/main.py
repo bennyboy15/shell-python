@@ -69,6 +69,16 @@ def parseCommand(command):
         
     return args
 
+def handleRedirect(func, args):
+    if ">" in args:
+        index = args.index(">")
+    elif "1>" in args:
+        index = args.index("1>")
+    else:
+        index = None
+    output_path = args[index + 1]
+    actual_args = args[:index]
+    executeProgram(func, actual_args, output_file=output_path)
 
 def main():
     builtIns = ["exit", "echo", "type", "pwd", "cd"]
@@ -82,15 +92,7 @@ def main():
                 continue
             case "echo":
                 if ">" in args or "1>" in args:
-                    if ">" in args:
-                        index = args.index(">")
-                    elif "1>" in args:
-                        index = args.index("1>")
-                    else:
-                        index = None
-                    output_path = args[index + 1]
-                    actual_args = args[:index]
-                    executeProgram(func, actual_args, output_file=output_path)
+                    handleRedirect(func, args)
                 else:
                     print(" ".join(args))
                 continue
@@ -114,15 +116,7 @@ def main():
                 isExec = searchForExecutable(func, False)
                 if isExec:
                     if ">" in args or "1>" in args:
-                        if ">" in args:
-                            index = args.index(">")
-                        elif "1>" in args:
-                            index = args.index("1>")
-                        else:
-                            index = None
-                        output_path = args[index + 1]
-                        actual_args = args[:index]
-                        executeProgram(func, actual_args, output_file=output_path)
+                        handleRedirect(func,args)
                     else:
                         executeProgram(func, args)
                 else:
