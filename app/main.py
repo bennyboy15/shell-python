@@ -17,9 +17,13 @@ def searchForExecutable(fileToFind, printOutput):
         print(f"{fileToFind}: not found")
     return False
 
-def executeProgram(fullPath, args):
+def executeProgram(fullPath, args, output_file=None):
     try:
-        subprocess.run([fullPath] + args, text=True)
+        if output_file:
+            with open(output_file, "w") as file:
+                subprocess.run([fullPath] + args, stdout=file, text=True) 
+        else:       
+            subprocess.run([fullPath] + args, text=True)
     except:
         pass
 
