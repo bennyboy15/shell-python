@@ -12,10 +12,10 @@ def searchForExecutable(fileToFind, printOutput):
         if os.access(fullPath, os.F_OK) and os.access(fullPath, os.X_OK):
             if printOutput:
                 print(f"{fileToFind} is {fullPath}")
-            return True, fullPath
+            return True
     if printOutput:
         print(f"{fileToFind}: not found")
-    return False, None
+    return False
 
 def executeProgram(fullPath, args):
     try:
@@ -45,7 +45,7 @@ def main():
                     #print(f"{args}: not found")
                 continue
             case _:
-                isExec, fullPath = searchForExecutable(func, False)
+                isExec = searchForExecutable(func, False)
                 if isExec:
                     executeProgram(func, args)
                 else:
