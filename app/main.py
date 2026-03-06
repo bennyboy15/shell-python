@@ -44,6 +44,10 @@ def main():
                     searchForExecutable(args, True)
                     #print(f"{args}: not found")
                 continue
+            case "pwd":
+                cwd = os.getcwd()
+                print(cwd)
+                continue
             case _:
                 isExec = searchForExecutable(func, False)
                 if isExec:
