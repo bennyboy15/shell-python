@@ -62,16 +62,14 @@ def main():
     builtIns = ["exit", "echo", "type", "pwd", "cd"]
     while (True):
         command = input("$ ").strip()
-        func = command.split(" ")[0].strip()
-        args = command.split(" ")[1:]
+        func = parseCommand(command)[0]
+        args = parseCommand(command)[1:]
         match(func):
             case "exit":
                 sys.exit()
                 continue
             case "echo":
-                toPrint = command[5:]
-                #print(toPrint)
-                print(" ".join(parseCommand(toPrint)))
+                print(" ".join(args))
                 continue
             case "type":
                 args = command[4:].strip()
