@@ -23,8 +23,14 @@ def executeProgram(fullPath, args):
     except:
         pass
 
+def changeDirectory(path):
+    if os.access(path, os.F_OK):
+        os.chdir(path)
+    else:
+        print(f"cd: {path}: No such file or directory")
+
 def main():
-    builtIns = ["exit", "echo", "type", "pwd"]
+    builtIns = ["exit", "echo", "type", "pwd", "cd"]
     while (True):
         command = input("$ ").strip()
         func = command.split(" ")[0].strip()
@@ -47,6 +53,10 @@ def main():
             case "pwd":
                 cwd = os.getcwd()
                 print(cwd)
+                continue
+            case "cd":
+                args = command[2:].strip()
+                changeDirectory(args)
                 continue
             case _:
                 isExec = searchForExecutable(func, False)
