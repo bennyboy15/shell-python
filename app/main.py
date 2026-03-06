@@ -21,7 +21,7 @@ def executeProgram(fullPath, args, output_file=None):
     try:
         if output_file:
             with open(output_file, "w") as file:
-                subprocess.run([fullPath] + args, stdout=file, text=True) 
+                subprocess.run([fullPath] + args, stdout=file, stderr=subprocess.STDOUT, text=True) 
         else:       
             subprocess.run([fullPath] + args, text=True)
     except:
@@ -74,6 +74,8 @@ def handleRedirect(func, args):
         index = args.index(">")
     elif "1>" in args:
         index = args.index("1>")
+    elif "2>" in args:
+        index = args.index("2>")
     else:
         index = None
     output_path = args[index + 1]
