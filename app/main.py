@@ -113,7 +113,7 @@ def handleRedirect(func, args):
 def isRedirectionOrAppend(args):
     return ">" in args or "1>" in args or ">>" in args or "1>>" in args or "2>" in args or "2>>" in args
 
-def get_all_executables():
+def get_all_executables(BUILTINS):
     execs = set(BUILTINS)
     path_str = os.environ.get('PATH', '')
     
@@ -137,8 +137,8 @@ def completer(text, state):
         return None
 
 # Globals
-CACHED_COMMANDS = get_all_executables()
 BUILTINS = ["exit", "echo", "type", "pwd", "cd"]
+CACHED_COMMANDS = get_all_executables(BUILTINS)
 # Register the tab-completion function
 readline.set_completer(completer)
 readline.parse_and_bind("tab: complete")
