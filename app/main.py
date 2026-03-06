@@ -24,6 +24,11 @@ def executeProgram(fullPath, args):
         pass
 
 def changeDirectory(path):
+    if path[0] == "~":
+        home_dir = os.environ.get("HOME", "/")
+        os.chdir(home_dir)
+        return
+    
     if os.access(path, os.F_OK):
         os.chdir(path)
     else:
