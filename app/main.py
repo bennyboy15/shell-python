@@ -93,7 +93,7 @@ def main():
                 sys.exit()
                 continue
             case "echo":
-                if ">" in args or "1>" in args:
+                if ">" in args or "1>" in args or "2>" in args:
                     handleRedirect(func, args)
                 else:
                     print(" ".join(args))
@@ -117,7 +117,7 @@ def main():
             case _:
                 isExec = searchForExecutable(func, False)
                 if isExec:
-                    if ">" in args or "1>" in args:
+                    if ">" in args or "1>" in args or "2>" in args:
                         handleRedirect(func,args)
                     else:
                         executeProgram(func, args)
