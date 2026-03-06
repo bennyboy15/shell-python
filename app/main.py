@@ -1,6 +1,7 @@
 import sys
 import os
 import subprocess
+import readline
 
 def searchForExecutable(fileToFind, printOutput):
     system_path = os.environ.get('PATH')
@@ -112,8 +113,20 @@ def handleRedirect(func, args):
 def isRedirectionOrAppend(args):
     return ">" in args or "1>" in args or ">>" in args or "1>>" in args or "2>" in args or "2>>" in args
 
+def completer(text, state):
+    options = [i for i in BUILTINS if i.startswith(text)]
+    if state < len(options):
+        return options[state]
+    else:
+        return None
+
+# Register the tab-completion function
+readline.set_completer(completer)
+readline.parse_and_bind("tab: complete")
+BUILTINS = ["exit", "echo", "type", "pwd", "cd"]
+
 def main():
-    builtIns = ["exit", "echo", "type", "pwd", "cd"]
+    #builtIns = ["exit", "echo", "type", "pwd", "cd"]
     while (True):
         command = input("$ ").strip()
         func = parseCommand(command)[0]
@@ -130,7 +143,7 @@ def main():
                 continue
             case "type":
                 args = command[4:].strip()
-                if args in builtIns:
+                if args in BUILTINS:
                     print(f"{args} is a shell builtin")
                 else:
                     searchForExecutable(args, True)
