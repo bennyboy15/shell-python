@@ -106,7 +106,7 @@ def handleRedirect(func, args):
         executeProgram(func, actual_args, output_file=output_path, target_stream=target_stream)
 
 def isRedirectionOrAppend(args):
-    return ">" in args or "1>" in args or ">>" in args or "1>>" in args or "2>" in args
+    return ">" in args or "1>" in args or ">>" in args or "1>>" in args or "2>" in args or "2>>" in args
 
 def main():
     builtIns = ["exit", "echo", "type", "pwd", "cd"]
