@@ -69,6 +69,7 @@ def parseCommand(command):
         
     return args
 
+
 def main():
     builtIns = ["exit", "echo", "type", "pwd", "cd"]
     while (True):
@@ -80,7 +81,13 @@ def main():
                 sys.exit()
                 continue
             case "echo":
-                print(" ".join(args))
+                if ">" in args or "1>" in args:
+                    index = args.index(">") or args.index("1>")
+                    output_path = args[index + 1]
+                    actual_args = args[:index]
+                    executeProgram(func, actual_args, output_file=output_path)
+                else:
+                    print(" ".join(args))
                 continue
             case "type":
                 args = command[4:].strip()
