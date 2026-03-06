@@ -17,11 +17,14 @@ def searchForExecutable(fileToFind, printOutput):
         print(f"{fileToFind}: not found")
     return False
 
-def executeProgram(fullPath, args, output_file=None):
+def executeProgram(fullPath, args, output_file=None, target_stream="stdout"):
     try:
         if output_file:
             with open(output_file, "w") as file:
-                subprocess.run([fullPath] + args, stdout=file, stderr=subprocess.STDOUT, text=True) 
+                if target_stream == "stderr":
+                    subprocess.run([fullPath] + args, stderr=file, text=True)
+                else:
+                    subprocess.run([fullPath] + args, stdout=file, text=True) 
         else:       
             subprocess.run([fullPath] + args, text=True)
     except:
@@ -70,17 +73,22 @@ def parseCommand(command):
     return args
 
 def handleRedirect(func, args):
+    target_stream = None
     if ">" in args:
         index = args.index(">")
     elif "1>" in args:
         index = args.index("1>")
     elif "2>" in args:
         index = args.index("2>")
+        target_stream = "stderr"
     else:
         index = None
     output_path = args[index + 1]
     actual_args = args[:index]
-    executeProgram(func, actual_args, output_file=output_path)
+    if target_stream:
+        executeProgram(func, actual_args, output_file=output_path, target_stream=target_stream)
+    else:
+        executeProgram(func, actual_args, output_file=output_path)
 
 def main():
     builtIns = ["exit", "echo", "type", "pwd", "cd"]
