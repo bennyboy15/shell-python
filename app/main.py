@@ -34,6 +34,30 @@ def changeDirectory(path):
     else:
         print(f"cd: {path}: No such file or directory")
 
+def parseCommand(command):
+    args = []
+    current_arg = ""
+    inSingleQuotes = False
+    
+    i = 0
+    while i < len(command):
+        char = command[i]
+
+        if char == "'":
+            inSingleQuotes = not inSingleQuotes
+        elif char == " " and not inSingleQuotes:
+            if current_arg:
+                args.append(current_arg)
+                current_arg = ""
+        else:
+            current_arg += char
+        i += 1
+        
+    if current_arg:
+        args.append(current_arg)
+        
+    return args
+
 def main():
     builtIns = ["exit", "echo", "type", "pwd", "cd"]
     while (True):
@@ -45,7 +69,9 @@ def main():
                 sys.exit()
                 continue
             case "echo":
-                print(command[5:])
+                toPrint = command[5:]
+                print(toPrint)
+                print(" ".join(parseCommand(toPrint)))
                 continue
             case "type":
                 args = command[4:].strip()
