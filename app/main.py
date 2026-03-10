@@ -113,34 +113,85 @@ def handleRedirect(func, args):
 def isRedirectionOrAppend(args):
     return ">" in args or "1>" in args or ">>" in args or "1>>" in args or "2>" in args or "2>>" in args
 
-def get_all_executables(BUILTINS):
-    execs = set(BUILTINS)
-    path_str = os.environ.get('PATH', '')
+def getAllDirectoryExecutables(path_input):
+    execs = set()
     
+    # Handle the special "PATH" case or a specific directory
+    search_paths = []
+    if path_input == "PATH":
+        search_paths = os.environ.get('PATH', '').split(os.pathsep)
+    else:
+        search_paths = [path_input]
+
+    for directory in search_paths:
+        if not os.path.isdir(directory):
+            continue
+        try:
+            for filename in os.listdir(directory):
+                full_path = os.path.join(directory, filename)
+                # Ensure it's a file and we have execute permissions
+                if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+                    execs.add(filename)
+        except (PermissionError, FileNotFoundError):
+            continue
+
+    return list(execs)
+
+def getAllCompleterFileOptions():
+
+    path_execs = set(getAllDirectoryExecutables("PATH"))
+    cwd_execs = set(getAllDirectoryExecutables(os.getcwd()))
+    
+    # Merging all sets into one
+    combined = path_execs | cwd_execs
+    return sorted(list(combined))
+
+def get_path_commands():
+    """Helper to find all executable names in the system PATH."""
+    commands = set()
+    path_str = os.environ.get('PATH', '')
     for directory in path_str.split(os.pathsep):
-        if os.path.isdir(directory):
-            try:
-                for filename in os.listdir(directory):
-                    full_path = os.path.join(directory, filename)
-                    if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-                        execs.add(filename)
-            except PermissionError:
-                continue
-    return sorted(list(execs))
+        if not os.path.isdir(directory):
+            continue
+        try:
+            for filename in os.listdir(directory):
+                full_path = os.path.join(directory, filename)
+                if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+                    commands.add(filename)
+        except (PermissionError, FileNotFoundError):
+            continue
+    return commands
 
 def completer(text, state):
-    options = [i for i in CACHED_COMMANDS if i.startswith(text)]
+    buffer = readline.get_line_buffer()
+    
+    # Check if we are completing the COMMAND (first word)
+    # Use lstrip to ignore leading spaces
+    if " " not in buffer.lstrip():
+        # Get dynamic path commands + static builtins
+        path_cmds = get_path_commands()
+        all_options = sorted(list(set(BUILTINS) | path_cmds))
+        options = [cmd for cmd in all_options if cmd.startswith(text)]
+    else:
+        # FILENAME COMPLETION (Arguments)
+        try:
+            cwd = os.getcwd()
+            # Sort for deterministic behavior in tests
+            options = sorted([f for f in os.listdir(cwd) if f.startswith(text)])
+        except Exception:
+            options = []
 
     if state < len(options):
+        # Your brief says add a trailing space
         return options[state] + " "
     else:
         return None
 
 # Globals
 BUILTINS = ["exit", "echo", "type", "pwd", "cd"]
-CACHED_COMMANDS = get_all_executables(BUILTINS)
 # Register the tab-completion function
 readline.set_completer(completer)
+readline.set_completer_delims(' \t\n;')
 readline.parse_and_bind("tab: complete")
 
 def main():
