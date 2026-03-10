@@ -165,47 +165,51 @@ def get_path_commands():
 def completer(text, state):
     buffer = readline.get_line_buffer()
     
-    # 1. COMMAND COMPLETION
+    # 1. COMMAND COMPLETION (First word)
     if " " not in buffer.lstrip():
         path_cmds = get_path_commands()
         all_options = sorted(list(set(BUILTINS) | path_cmds))
         options = [cmd for cmd in all_options if cmd.startswith(text)]
+        # Commands always get a trailing space
+        suffix = " "
     
-    # 2. FILENAME/PATH COMPLETION
+    # 2. FILENAME & DIRECTORY COMPLETION
     else:
         options = []
         try:
-            # Check if there's a path separator in the text (e.g., "path/to/f")
+            # Handle Nested Paths
             if "/" in text:
-                # Split at the last slash
-                # dirname: "path/to/"
-                # prefix: "f"
                 dirname = os.path.dirname(text)
                 prefix = os.path.basename(text)
-                
-                # We need to search inside 'dirname'
-                # If dirname is empty (e.g. "/file"), use root "/"
                 search_dir = dirname if dirname else "/"
                 
                 if os.path.isdir(search_dir):
                     for f in os.listdir(search_dir):
                         if f.startswith(prefix):
-                            # Important: the return value must include the original path
-                            # so "path/to/f" becomes "path/to/file.txt"
                             options.append(os.path.join(dirname, f))
             else:
-                # Standard current directory completion
+                # Current Directory
                 cwd = os.getcwd()
                 options = [f for f in os.listdir(cwd) if f.startswith(text)]
             
             options.sort()
         except Exception:
-            options = []
+            return None
 
-    # 3. RETURN MATCH
+    # 3. SELECT MATCH AND APPLY SUFFIX
     if state < len(options):
-        # Add the trailing space as per the brief
-        return options[state] + " "
+        match = options[state]
+        
+        # If we are in the 'arguments' section (not a command)
+        if " " in buffer.lstrip():
+            # Check if the match is a directory
+            if os.path.isdir(match):
+                return match + "/"  # Brief: "Append a trailing / with no space"
+            else:
+                return match + " "  # Brief: "Complete it and add a trailing space"
+        
+        return match + " " # Default for commands
+        
     return None
 
 # Globals
