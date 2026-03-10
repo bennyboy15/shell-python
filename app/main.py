@@ -212,6 +212,36 @@ def completer(text, state):
         
     return None
 
+def handle_pipeline(command_str):
+    # Split the command by the pipe symbol
+    # Example: "cat file.txt | wc" -> ["cat file.txt", "wc"]
+    parts = [p.strip() for p in command_str.split('|')]
+    
+    if len(parts) != 2:
+        return # This basic logic handles 2 commands as per the brief
+
+    # Parse the individual commands using your existing parseCommand
+    cmd1_args = parseCommand(parts[0])
+    cmd2_args = parseCommand(parts[1])
+
+    try:
+        # Start the first process
+        # We redirect its stdout to a PIPE so the second process can read it
+        p1 = subprocess.Popen(cmd1_args, stdout=subprocess.PIPE)
+
+        # Start the second process
+        # Its stdin comes from p1's stdout
+        p2 = subprocess.Popen(cmd2_args, stdin=p1.stdout)
+
+        # Allow p1 to receive a SIGPIPE if p2 exits
+        p1.stdout.close() 
+
+        # Wait for the final command in the pipeline to finish
+        p2.wait()
+        
+    except Exception as e:
+        print(f"Pipeline error: {e}")
+
 # Globals
 BUILTINS = ["exit", "echo", "type", "pwd", "cd"]
 # Register the tab-completion function
@@ -223,6 +253,11 @@ def main():
     #builtIns = ["exit", "echo", "type", "pwd", "cd"]
     while (True):
         command = input("$ ").strip()
+
+        if "|" in command:
+            handle_pipeline(command)
+            continue 
+        
         func = parseCommand(command)[0]
         args = parseCommand(command)[1:]
         match(func):
