@@ -165,27 +165,48 @@ def get_path_commands():
 def completer(text, state):
     buffer = readline.get_line_buffer()
     
-    # Check if we are completing the COMMAND (first word)
-    # Use lstrip to ignore leading spaces
+    # 1. COMMAND COMPLETION
     if " " not in buffer.lstrip():
-        # Get dynamic path commands + static builtins
         path_cmds = get_path_commands()
         all_options = sorted(list(set(BUILTINS) | path_cmds))
         options = [cmd for cmd in all_options if cmd.startswith(text)]
+    
+    # 2. FILENAME/PATH COMPLETION
     else:
-        # FILENAME COMPLETION (Arguments)
+        options = []
         try:
-            cwd = os.getcwd()
-            # Sort for deterministic behavior in tests
-            options = sorted([f for f in os.listdir(cwd) if f.startswith(text)])
+            # Check if there's a path separator in the text (e.g., "path/to/f")
+            if "/" in text:
+                # Split at the last slash
+                # dirname: "path/to/"
+                # prefix: "f"
+                dirname = os.path.dirname(text)
+                prefix = os.path.basename(text)
+                
+                # We need to search inside 'dirname'
+                # If dirname is empty (e.g. "/file"), use root "/"
+                search_dir = dirname if dirname else "/"
+                
+                if os.path.isdir(search_dir):
+                    for f in os.listdir(search_dir):
+                        if f.startswith(prefix):
+                            # Important: the return value must include the original path
+                            # so "path/to/f" becomes "path/to/file.txt"
+                            options.append(os.path.join(dirname, f))
+            else:
+                # Standard current directory completion
+                cwd = os.getcwd()
+                options = [f for f in os.listdir(cwd) if f.startswith(text)]
+            
+            options.sort()
         except Exception:
             options = []
 
+    # 3. RETURN MATCH
     if state < len(options):
-        # Your brief says add a trailing space
+        # Add the trailing space as per the brief
         return options[state] + " "
-    else:
-        return None
+    return None
 
 # Globals
 BUILTINS = ["exit", "echo", "type", "pwd", "cd"]
