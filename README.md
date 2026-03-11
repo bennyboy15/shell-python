@@ -1,34 +1,29 @@
-[![progress-banner](https://backend.codecrafters.io/progress/shell/649ba4c8-edd5-4c2b-89bc-e31b1bfe080e)](https://app.codecrafters.io/users/bennyboy15?r=2qF)
+# Custom Python Shell
 
-This is a starting point for Python solutions to the
-["Build Your Own Shell" Challenge](https://app.codecrafters.io/courses/shell/overview).
+A functional command-line interface built from scratch using Python. This project implements core shell mechanics, including process management, command parsing, and I/O redirection.
 
-In this challenge, you'll build your own POSIX compliant shell that's capable of
-interpreting shell commands, running external programs and builtin commands like
-cd, pwd, echo and more. Along the way, you'll learn about shell command parsing,
-REPLs, builtin commands, and more.
+---
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+## Motivation
 
-# Passing the first stage
+The primary goal of this project was to dive deep into **systems programming** and understand how operating systems bridge the gap between user input and hardware execution. By building this shell, I explored:
 
-The entry point for your `shell` implementation is in `app/main.py`. Study and
-uncomment the relevant code, then run the command below to execute the tests on
-our servers:
+* **Process Lifecycle:** Implementing the `fork/exec` model to manage child processes.
+* **System Calls:** Interfacing directly with OS-level functions for navigation and file handling.
+* **Data Parsing:** Building a robust parser to handle arguments, flags, and special characters.
+* **I/O Management:** Learning how file descriptors work by implementing standard output (`>`) and standard error (`2>`) redirection.
 
-```sh
-codecrafters submit
-```
+---
 
-Time to move on to the next stage!
+## Quick Start
 
-# Stage 2 & beyond
+### Prerequisites
+* **Python 3.8+**
+* Made with OS specific differences in mind but created on Windows.
 
-Note: This section is for stages 2 and beyond.
-
-1. Ensure you have `uv` installed locally
-1. Run `./your_program.sh` to run your program, which is implemented in
-   `app/main.py`.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+### Installation
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/bennyboy15/shell-python.git
+   cd shell-python
+   python app/main.py
