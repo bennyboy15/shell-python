@@ -17,25 +17,25 @@ The primary goal of this project was to dive deep into **systems programming** a
 
 ## Quick Start
 
-### Prerequisites
+## Prerequisites
 * **Python 3.8+**
 * Made with OS specific differences in mind but created on Windows.
 
-### Installation
+## Installation
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/bennyboy15/shell-python.git
    cd shell-python
    python app/main.py
 
-### Usage
+## Usage
 ```
 $ pwd
 /home/user/projects
 $ls -la > manifest.txt$ cat manifest.txt | grep ".py"
 ```
 
-### Contributions
+## Contributing
 Contributions are welcome! If you'd like to add features like tab-completion, environment variable support, or background jobs:
 
 Fork the repository.
